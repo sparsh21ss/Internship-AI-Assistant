@@ -1,0 +1,27 @@
+Alex Mercer
+Email: alex.mercer@email.com | Phone: (555) 019-2834 | GitHub: github.com/alexmercer
+
+EDUCATION
+Bachelor of Science in Computer Science
+State University
+Graduation: May 2026
+
+TECHNICAL SKILLS
+- Programming Languages: Python, JavaScript, TypeScript, SQL, HTML/CSS
+- Frameworks & Libraries: React, Node.js, Express, Next.js, Django
+- Databases: PostgreSQL, MongoDB, Redis
+- Developer Tools & DevOps: Git, GitHub, Docker, AWS (S3, EC2), Postman
+- Concepts: RESTful APIs, Agile Methodologies, Data Structures, Algorithms
+
+PROJECTS
+Developer Portfolio & Blog (Next.js, TailwindCSS)
+- Developed a responsive personal website and blog using Next.js, TypeScript, and TailwindCSS.
+- Integrated Markdown-based blog posts and deployed on Vercel, reaching 1,000+ page views.
+
+Task Management API (Node.js, Express, PostgreSQL)
+- Built a secure backend REST API for a task management application using Express and PostgreSQL.
+- Implemented JWT authentication, input validation, and role-based access control (RBAC).
+
+Weather Dashboard (Python, React)
+- Created a dashboard that fetches and visualizes real-time weather data from open APIs.
+- Implemented client-side caching in React to reduce API calls by 40%.

@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Internship Assistant & Multi-Agent Matcher</title>
+    <meta name="description" content="An advanced multi-agent AI assistant that reads your resume, searches the web for matching internships, calculates a hybrid match score, and suggests resume revisions.">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom Style Sheet -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <!-- Background Gradient Grids (Aesthetics) -->
+    <div class="gradient-bg">
+        <div class="g1"></div>
+        <div class="g2"></div>
+        <div class="g3"></div>
+    </div>
+
+    <div class="app-container">
+        <!-- Header Section -->
+        <header class="app-header">
+            <div class="logo-container">
+                <div class="logo-icon">
+                    <i class="fa-solid fa-briefcase"></i>
+                </div>
+                <h1>Internship <span class="gradient-text">Assistant AI</span></h1>
+            </div>
+            <p class="subtitle">Deployed Multi-Agent System for Resume Matching & Search</p>
+        </header>
+
+        <!-- Main Workspace -->
+        <main class="workspace">
+            
+            <!-- Left Column: Controls & Pipeline Tracker -->
+            <section class="control-panel glass">
+                <h2>Upload Resume</h2>
+                <p class="panel-desc">Feed your resume to the agents to scan skills, crawl live internships, and generate revisions.</p>
+                
+                <!-- Drag & Drop Upload Zone -->
+                <div class="upload-zone" id="uploadZone">
+                    <input type="file" id="fileInput" accept=".pdf,.txt,.md" style="display: none;">
+                    <div class="upload-content">
+                        <i class="fa-solid fa-cloud-arrow-up upload-icon"></i>
+                        <h3>Drag & drop your resume</h3>
+                        <p>Supports PDF, TXT, or MD (Max 8MB)</p>
+                        <button type="button" class="btn btn-secondary" id="browseBtn">Browse Files</button>
+                    </div>
+                    <div class="selected-file-info" id="fileInfo" style="display: none;">
+                        <i class="fa-solid fa-file-pdf file-icon-large"></i>
+                        <span id="fileName">resume.pdf</span>
+                        <button type="button" class="btn btn-primary" id="analyzeBtn">Analyze Resume</button>
+                        <button type="button" class="btn-text" id="cancelBtn">Cancel</button>
+                    </div>
+                </div>
+
+                <!-- Multi-Agent Stepper (Progress Tracker) -->
+                <div class="agent-stepper" id="agentStepper" style="display: none;">
+                    <h3><i class="fa-solid fa-robot pulse-icon"></i> Agent Orchestrator Active</h3>
+                    <ul class="steps">
+                        <li class="step" id="step1">
+                            <div class="step-status"><i class="fa-solid fa-circle-notch fa-spin"></i></div>
+                            <div class="step-details">
+                                <h4>Reading Agent</h4>
+                                <p>Extracting education and skills...</p>
+                            </div>
+                        </li>
+                        <li class="step" id="step2">
+                            <div class="step-status"><i class="fa-regular fa-circle"></i></div>
+                            <div class="step-details">
+                                <h4>Search Engine Agent</h4>
+                                <p>Crawling matching internships...</p>
+                            </div>
+                        </li>
+                        <li class="step" id="step3">
+                            <div class="step-status"><i class="fa-regular fa-circle"></i></div>
+                            <div class="step-details">
+                                <h4>Comparing Agent</h4>
+                                <p>Calculating hybrid Match%...</p>
+                            </div>
+                        </li>
+                        <li class="step" id="step4">
+                            <div class="step-status"><i class="fa-regular fa-circle"></i></div>
+                            <div class="step-details">
+                                <h4>Suggesting Agent</h4>
+                                <p>Generating resume upgrades...</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Right Column: Results Dashboard -->
+            <section class="results-panel" id="resultsPanel" style="display: none;">
+                
+                <!-- Candidate profile card -->
+                <div class="profile-card glass">
+                    <div class="profile-header">
+                        <div class="avatar">
+                            <i class="fa-solid fa-user-tie"></i>
+                        </div>
+                        <div>
+                            <h2 id="candidateName">Candidate Profile</h2>
+                            <p id="candidateEdu"><i class="fa-solid fa-graduation-cap"></i> Degree in Computer Science</p>
+                        </div>
+                    </div>
+                    <hr class="divider">
+                    <div class="skills-container">
+                        <h3>Identified Skills</h3>
+                        <div class="skills-badges" id="candidateSkills">
+                            <!-- Badges injected dynamically -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dashboard Tabs -->
+                <div class="tabs-container">
+                    <div class="tabs">
+                        <button class="tab-btn active" data-tab="internshipsTab"><i class="fa-solid fa-list-check"></i> Top 10 Internships</button>
+                        <button class="tab-btn" data-tab="revisionsTab"><i class="fa-solid fa-file-signature"></i> Resume Revisions</button>
+                        <button class="tab-btn" data-tab="learningTab"><i class="fa-solid fa-laptop-code"></i> Skill Upgrades</button>
+                    </div>
+
+                    <!-- Tab 1: Top 10 Internships -->
+                    <div class="tab-content active" id="internshipsTab">
+                        <div class="internship-list" id="internshipList">
+                            <!-- Cards injected dynamically -->
+                        </div>
+                    </div>
+
+                    <!-- Tab 2: Resume Revisions -->
+                    <div class="tab-content" id="revisionsTab">
+                        <div class="revision-panel glass">
+                            <h3><i class="fa-solid fa-file-pen gradient-text-icon"></i> Actionable Resume Modifications</h3>
+                            <p class="tab-desc">The Suggesting Agent recommends updating the following sections to align with target requirements:</p>
+                            <div class="revision-cards" id="revisionCards">
+                                <!-- Revision cards injected dynamically -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tab 3: Learning Path -->
+                    <div class="tab-content" id="learningTab">
+                        <div class="learning-panel glass">
+                            <h3><i class="fa-solid fa-graduation-cap gradient-text-icon"></i> Recommeded Skill Enhancements</h3>
+                            <p class="tab-desc">Accelerate your qualifications by studying these core missing tools identified by the agent:</p>
+                            <div class="learning-cards" id="learningCards">
+                                <!-- Learning cards injected dynamically -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </section>
+
+            <!-- Instructions Placeholder (shown before upload) -->
+            <section class="placeholder-panel glass" id="placeholderPanel">
+                <div class="placeholder-content">
+                    <div class="visual-art">
+                        <div class="circle-ring"></div>
+                        <i class="fa-solid fa-network-wired brain-art-icon"></i>
+                    </div>
+                    <h2>Awaiting Agent Execution</h2>
+                    <p>Upload your resume to deploy the multi-agent system. The agents will automatically search live postings, run vector embedding comparisons, and structure a custom portfolio match sheet.</p>
+                    
+                    <div class="features-list">
+                        <div class="feature-item">
+                            <i class="fa-solid fa-file-import"></i>
+                            <div>
+                                <h4>Resume Parser</h4>
+                                <p>Extracts education and skills using structural JSON schemas.</p>
+                            </div>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fa-solid fa-magnifying-glass-location"></i>
+                            <div>
+                                <h4>Internship Finder</h4>
+                                <p>Crawls online portals for relevant internship openings.</p>
+                            </div>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fa-solid fa-chart-pie"></i>
+                            <div>
+                                <h4>Hybrid Matcher</h4>
+                                <p>Uses 50% weighted overlap + 50% vector embedding cosine similarity.</p>
+                            </div>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fa-solid fa-lightbulb"></i>
+                            <div>
+                                <h4>Smart Suggestor</h4>
+                                <p>Writes customized draft bullet points to revise your resume.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+
+        <!-- Footer -->
+        <footer class="app-footer">
+            <p>&copy; 2026 Internship Assistant AI. Powered by Cooperative Agent Teams.</p>
+        </footer>
+    </div>
+
+    <!-- Custom Script -->
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
